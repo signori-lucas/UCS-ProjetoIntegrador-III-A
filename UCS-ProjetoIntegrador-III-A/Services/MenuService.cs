@@ -13,7 +13,6 @@ namespace UCS_ProjetoIntegrador_III_A.Services
         private readonly LitaDeAlunosService _listaDeAlunosService;
         private readonly LitaDeTurmasService _listaDeTurmasService;
 
-        // Dependências injetadas via construtor
         public MenuService(LitaDeAlunosService listaDeAlunosService, LitaDeTurmasService listaDeTurmasService)
         {
             _listaDeAlunosService = listaDeAlunosService;
