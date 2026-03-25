@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UCS_ProjetoIntegrador_III_A.Models;
+using UCS_ProjetoIntegrador_III_A.Exceptions;
 
 namespace UCS_ProjetoIntegrador_III_A.Services
 {
@@ -10,13 +12,15 @@ namespace UCS_ProjetoIntegrador_III_A.Services
 
         public void AdicionaInicio(Aluno aluno)
         {
-            if (aluno == null) throw new ArgumentNullException(nameof(aluno));
+            this.ValidarAluno(aluno);
+
             _alunos.Insert(0, aluno);
         }
 
         public void AdicionaFinal(Aluno aluno)
         {
-            if (aluno == null) throw new ArgumentNullException(nameof(aluno));
+            this.ValidarAluno(aluno);
+
             _alunos.Add(aluno);
         }
 
@@ -52,5 +56,20 @@ namespace UCS_ProjetoIntegrador_III_A.Services
         }
 
         public int Count => _alunos.Count;
+
+
+        #region validações
+
+        private void ValidarAluno(Aluno aluno)
+        {
+            if (aluno == null)
+                throw new ExcecaoDeAlunoJaExistente("Objeto aluno nulo");
+
+            var alunoExistente = this._alunos.FirstOrDefault(a => a.Equals(aluno));
+            if (alunoExistente != null)
+                throw new ExcecaoDeAlunoJaExistente();
+        }
+
+        #endregion        
     }
 }

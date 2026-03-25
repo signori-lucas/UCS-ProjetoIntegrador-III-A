@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UCS_ProjetoIntegrador_III_A.Exceptions;
 using UCS_ProjetoIntegrador_III_A.Models;
 
 namespace UCS_ProjetoIntegrador_III_A.Services
@@ -11,7 +12,8 @@ namespace UCS_ProjetoIntegrador_III_A.Services
 
         public void Adiciona(Turma turma)
         {
-            if (turma == null) throw new ArgumentNullException(nameof(turma));
+            this.ValidarTurma(turma);
+
             _turmas.Add(turma);
         }
 
@@ -29,5 +31,20 @@ namespace UCS_ProjetoIntegrador_III_A.Services
         }
 
         public int Count => _turmas.Count;
+
+
+        #region validações
+
+        private void ValidarTurma(Turma aluno)
+        {
+            if (aluno == null)
+                throw new ExcecaoDeTurmaJaExistente("Objeto aluno nulo");
+
+            var alunoExistente = this._turmas.FirstOrDefault(a => a.Equals(aluno));
+            if (alunoExistente != null)
+                throw new ExcecaoDeTurmaJaExistente();
+        }
+
+        #endregion 
     }
 }

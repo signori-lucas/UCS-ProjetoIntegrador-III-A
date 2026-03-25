@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using UCS_ProjetoIntegrador_III_A.Models;
+using UCS_ProjetoIntegrador_III_A.Exceptions;
 using UCS_ProjetoIntegrador_III_A.Models.Enums;
 using UCS_ProjetoIntegrador_III_A.Utils;
 
@@ -39,23 +40,30 @@ namespace UCS_ProjetoIntegrador_III_A.Services
 
                 Console.WriteLine();
 
-                switch (escolha)
+                try
                 {
-                    case "1":
-                        MostrarAlunoMenu();
-                        break;
-                    case "2":
-                        MostrarTurmaMenu();
-                        break;
-                    case "3":
-                        MatricularAluno();
-                        break;
-                    case "0":
-                        Console.WriteLine("Saindo...");
-                        return;
-                    default:
-                        Console.WriteLine("Opção inválida. Tente novamente.");
-                        break;
+                    switch (escolha)
+                    {
+                        case "1":
+                            MostrarAlunoMenu();
+                            break;
+                        case "2":
+                            MostrarTurmaMenu();
+                            break;
+                        case "3":
+                            MatricularAluno();
+                            break;
+                        case "0":
+                            Console.WriteLine("Saindo...");
+                            return;
+                        default:
+                            Console.WriteLine("Opção inválida. Tente novamente.");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro Inesperado: {ex.Message}");
                 }
             }
         }
@@ -86,144 +94,156 @@ namespace UCS_ProjetoIntegrador_III_A.Services
 
                 Console.WriteLine();
 
-                switch (opcao)
+                try
                 {
-                    case "1":
-                        var a1 = CriarAluno();
-                        _listaDeAlunosService.AdicionaInicio(a1);
+                    switch (opcao)
+                    {
+                        case "1":
+                            var a1 = CriarAluno();
+                            _listaDeAlunosService.AdicionaInicio(a1);
+                            Console.WriteLine("Aluno cadastrado no início da lista.");
 
-                        Console.WriteLine("Aluno cadastrado no início da lista.");
-                        break;
-                    case "2":
-                        var a2 = CriarAluno();
-                        _listaDeAlunosService.AdicionaFinal(a2);
+                            break;
+                        case "2":
 
-                        Console.WriteLine("Aluno cadastrado no final da lista.");
-                        break;
-                    case "3":
-                        if (_listaDeAlunosService.RemoveFinal())
-                            Console.WriteLine("Último aluno removido com sucesso.");
-                        else
-                            Console.WriteLine("Lista vazia. Nenhum aluno para remover.");
+                            var a2 = CriarAluno();
+                            _listaDeAlunosService.AdicionaFinal(a2);
+                            Console.WriteLine("Aluno cadastrado no final da lista.");
 
-                        break;
-                    case "4":
-                        _listaDeAlunosService.OrdenaPorNome();
+                            break;
+                        case "3":
+                            if (_listaDeAlunosService.RemoveFinal())
+                                Console.WriteLine("Último aluno removido com sucesso.");
+                            else
+                                Console.WriteLine("Lista vazia. Nenhum aluno para remover.");
 
-                        Console.WriteLine("Lista de alunos ordenada por nome.");
+                            break;
+                        case "4":
+                            _listaDeAlunosService.OrdenaPorNome();
 
-                        break;
-                    case "5":
-                        Console.Write("Informe a posição: ");
+                            Console.WriteLine("Lista de alunos ordenada por nome.");
 
-                        var posInput = Console.ReadLine();
-                        if (int.TryParse(posInput, out int pos))
-                        {
-                            var found = _listaDeAlunosService.BuscarAlunoPorPosicao(pos - 1);
-                            if (found != null)
+                            break;
+                        case "5":
+                            Console.Write("Informe a posição: ");
+
+                            var posInput = Console.ReadLine();
+                            if (int.TryParse(posInput, out int pos))
                             {
-                                EscreveAluno(found);
+                                var found = _listaDeAlunosService.BuscarAlunoPorPosicao(pos - 1);
+                                if (found != null)
+                                {
+                                    EscreveAluno(found);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Nenhum aluno na posição informada.");
+                                }
                             }
                             else
                             {
-                                Console.WriteLine("Nenhum aluno na posição informada.");
+                                Console.WriteLine("Posição inválida.");
                             }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Posição inválida.");
-                        }
 
-                        break;
-                    case "6":
-                        Console.Write("Informe o CPF: ");
+                            break;
+                        case "6":
+                            Console.Write("Informe o CPF: ");
 
-                        var cpf = Console.ReadLine();
-                        var aluno = _listaDeAlunosService.BuscarAlunoPorCPF(cpf);
-                        if (aluno != null)
-                        {
-                            EscreveAluno(aluno);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Nenhum aluno com o CPF informado.");
-                        }
-
-                        break;
-                    case "7":
-                        var todos = _listaDeAlunosService.BuscarTodos();
-                        if (todos.Count == 0)
-                        {
-                            Console.WriteLine("Lista vazia.");
-                        }
-                        else
-                        {
-                            for (int i = 0; i < todos.Count; i++)
+                            var cpf = Console.ReadLine();
+                            var aluno = _listaDeAlunosService.BuscarAlunoPorCPF(cpf);
+                            if (aluno != null)
                             {
-                                EscreveAluno(todos[i]);
+                                EscreveAluno(aluno);
                             }
-                        }
-
-                        break;
-                    case "8":
-                        var ordenados = _listaDeAlunosService.BuscarTodos().OrderBy(a => a.Nome).ToList();
-                        if (ordenados.Count == 0)
-                        {
-                            Console.WriteLine("Lista vazia.");
-                        }
-                        else
-                        {
-                            for (int i = 0; i < ordenados.Count; i++)
+                            else
                             {
-                                EscreveAluno(ordenados[i]);
+                                Console.WriteLine("Nenhum aluno com o CPF informado.");
                             }
-                        }
 
-                        break;
-                    case "9":
-                        Console.WriteLine($"Quantidade de alunos: {_listaDeAlunosService.Count}");
-
-                        break;
-                    case "10":
-
-                        TipoEnsino etapa = MenuEtapaEnsino();
-                        var alunosEmDesacordo = _listaDeAlunosService
-                            .BuscarTodos()
-                            .Where(a => a.TurmaId.HasValue 
-                                     && a.Turma.EtapaEnsino.Equals(etapa) 
-                                     && !a.EtapaEnsino.Equals(etapa))
-                            .ToList();
-
-                        Console.WriteLine($"Etapa de Ensino Selecionada: {EnumUtils.GetEnumDescription(etapa)}");
-                        Console.WriteLine();
-                        Console.WriteLine($"  Alunos em desacordo com o tipo de ensino");
-
-                        if (alunosEmDesacordo != null && alunosEmDesacordo.Count > 0)
-                        {
-                            foreach (var a in alunosEmDesacordo)
+                            break;
+                        case "7":
+                            var todos = _listaDeAlunosService.BuscarTodos();
+                            if (todos.Count == 0)
                             {
-                                Console.WriteLine($"  - {a.Nome} | CPF: {a.CPF} | Idade: {a.Idade} | Ensino Aluno: {EnumUtils.GetEnumDescription(a.EtapaEnsino)} | Ensino Turma: {EnumUtils.GetEnumDescription(a.Turma.EtapaEnsino)}");
+                                Console.WriteLine("Lista vazia.");
                             }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Nenhuma aluno em desacordo com a matricula.");
-                        }
-                        break;
-                    case "0":
+                            else
+                            {
+                                for (int i = 0; i < todos.Count; i++)
+                                {
+                                    EscreveAluno(todos[i]);
+                                }
+                            }
 
-                        return;
-                    default:
-                        Console.WriteLine("Opção inválida. Tente novamente.");
+                            break;
+                        case "8":
+                            var ordenados = _listaDeAlunosService.BuscarTodos().OrderBy(a => a.Nome).ToList();
+                            if (ordenados.Count == 0)
+                            {
+                                Console.WriteLine("Lista vazia.");
+                            }
+                            else
+                            {
+                                for (int i = 0; i < ordenados.Count; i++)
+                                {
+                                    EscreveAluno(ordenados[i]);
+                                }
+                            }
 
-                        break;
+                            break;
+                        case "9":
+                            Console.WriteLine($"Quantidade de alunos: {_listaDeAlunosService.Count}");
+
+                            break;
+                        case "10":
+
+                            TipoEnsino etapa = MenuEtapaEnsino();
+                            var alunosEmDesacordo = _listaDeAlunosService
+                                .BuscarTodos()
+                                .Where(a => a.TurmaId.HasValue
+                                         && a.Turma.EtapaEnsino.Equals(etapa)
+                                         && !a.EtapaEnsino.Equals(etapa))
+                                .ToList();
+
+                            Console.WriteLine($"Etapa de Ensino Selecionada: {EnumUtils.GetEnumDescription(etapa)}");
+                            Console.WriteLine();
+                            Console.WriteLine($"  Alunos em desacordo com o tipo de ensino");
+
+                            if (alunosEmDesacordo != null && alunosEmDesacordo.Count > 0)
+                            {
+                                foreach (var a in alunosEmDesacordo)
+                                {
+                                    Console.WriteLine($"  - {a.Nome} | CPF: {a.CPF} | Idade: {a.Idade} | Ensino Aluno: {EnumUtils.GetEnumDescription(a.EtapaEnsino)} | Ensino Turma: {EnumUtils.GetEnumDescription(a.Turma.EtapaEnsino)}");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Nenhuma aluno em desacordo com a matricula.");
+                            }
+                            break;
+                        case "0":
+
+                            return;
+                        default:
+                            Console.WriteLine("Opção inválida. Tente novamente.");
+
+                            break;
+                    }
+                }
+                catch (ExcecaoDeAlunoJaExistente ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro Inesperado: {ex.Message}");
                 }
             }
         }
 
         private void EscreveAluno(Aluno aluno)
         {
-            Console.WriteLine($"Nome: {aluno.Nome} | CPF: {aluno.CPF} | Endereço: {aluno.Endereco} | Data Nascimento: {aluno.DataNascimento:dd/MM/yyyy} | Idade: {aluno.Idade} | Ensino: {EnumUtils.GetEnumDescription(aluno.EtapaEnsino)} | Turma: {aluno.Turma?.Codigo ?? "Não matriculado"}");
+            Console.Write(aluno.ToString());
         }
 
         private Aluno CriarAluno()
@@ -284,95 +304,107 @@ namespace UCS_ProjetoIntegrador_III_A.Services
 
                 Console.WriteLine();
 
-                switch (opc)
+                try
                 {
-                    case "1":
-                        var turma = CriarTurma();
-                        _listaDeTurmasService.Adiciona(turma);
-                        Console.WriteLine("Turma cadastrada com sucesso.");
-                        break;
-                    case "2":
-                        var turmas = _listaDeTurmasService.BuscarTodas();
-                        if (turmas.Count == 0)
-                        {
-                            Console.WriteLine("Nenhuma turma cadastrada.");
-                        }
-                        else
-                        {
-                            foreach (var t in turmas)
-                                EscreveTurma(t);
-                        }
-                        break;
-                    case "3":
-                        var todas = _listaDeTurmasService.BuscarTodas();
-                        if (todas.Count == 0)
-                        {
-                            Console.WriteLine("Nenhuma turma cadastrada.");
-                        }
-                        else
-                        {
-                            foreach (var t in todas)
-                            {
-                                EscreveTurma(t);
+                    switch (opc)
+                    {
+                        case "1":
+                            var turma = CriarTurma();
+                            _listaDeTurmasService.Adiciona(turma);
+                            Console.WriteLine("Turma cadastrada com sucesso.");
 
-                                if (t.Alunos != null && t.Alunos.Count > 0)
+                            break;
+                        case "2":
+                            var turmas = _listaDeTurmasService.BuscarTodas();
+                            if (turmas.Count == 0)
+                            {
+                                Console.WriteLine("Nenhuma turma cadastrada.");
+                            }
+                            else
+                            {
+                                foreach (var t in turmas)
+                                    EscreveTurma(t);
+                            }
+                            break;
+                        case "3":
+                            var todas = _listaDeTurmasService.BuscarTodas();
+                            if (todas.Count == 0)
+                            {
+                                Console.WriteLine("Nenhuma turma cadastrada.");
+                            }
+                            else
+                            {
+                                foreach (var t in todas)
                                 {
-                                    Console.WriteLine($"  Alunos:");
-                                    foreach (var a in t.Alunos)
+                                    EscreveTurma(t);
+
+                                    if (t.Alunos != null && t.Alunos.Count > 0)
                                     {
-                                        Console.WriteLine($"  - {a.Nome} | CPF: {a.CPF} | Idade: {a.Idade} | Ensino: {EnumUtils.GetEnumDescription(a.EtapaEnsino)}");
+                                        Console.WriteLine($"  Alunos:");
+                                        foreach (var a in t.Alunos)
+                                        {
+                                            Console.WriteLine($"  - {a.Nome} | CPF: {a.CPF} | Idade: {a.Idade} | Ensino: {EnumUtils.GetEnumDescription(a.EtapaEnsino)}");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Nenhuma aluno matriculado.");
                                     }
                                 }
-                                else
-                                {
-                                    Console.WriteLine("Nenhuma aluno matriculado.");
-                                }
                             }
-                        }
-                        break;
-                    case "4":
-                        var turmasAlunos = _listaDeTurmasService.BuscarTodas();
-                        if (turmasAlunos.Count == 0)
-                        {
-                            Console.WriteLine("Nenhuma turma cadastrada.");
-                        }
-                        else
-                        {
-                            Console.WriteLine();
-                            Console.WriteLine($"  Alunos em desacordo com o tipo de ensino da turma");
-                            foreach (var t in turmasAlunos)
+                            break;
+                        case "4":
+                            var turmasAlunos = _listaDeTurmasService.BuscarTodas();
+                            if (turmasAlunos.Count == 0)
+                            {
+                                Console.WriteLine("Nenhuma turma cadastrada.");
+                            }
+                            else
                             {
                                 Console.WriteLine();
-                                EscreveTurma(t);
+                                Console.WriteLine($"  Alunos em desacordo com o tipo de ensino da turma");
+                                foreach (var t in turmasAlunos)
+                                {
+                                    Console.WriteLine();
+                                    EscreveTurma(t);
 
-                                var alunosEmDesacordo = t.Alunos?.Where(a => a.EtapaEnsino != t.EtapaEnsino).ToList();
-                                if (alunosEmDesacordo != null && alunosEmDesacordo.Count > 0)
-                                {                                    
-                                    foreach (var a in alunosEmDesacordo)
+                                    var alunosEmDesacordo = t.Alunos?.Where(a => a.EtapaEnsino != t.EtapaEnsino).ToList();
+                                    if (alunosEmDesacordo != null && alunosEmDesacordo.Count > 0)
                                     {
-                                        Console.WriteLine($"  - {a.Nome} | CPF: {a.CPF} | Idade: {a.Idade} | Ensino: {EnumUtils.GetEnumDescription(a.EtapaEnsino)}");
+                                        foreach (var a in alunosEmDesacordo)
+                                        {
+                                            Console.WriteLine($"  - {a.Nome} | CPF: {a.CPF} | Idade: {a.Idade} | Ensino: {EnumUtils.GetEnumDescription(a.EtapaEnsino)}");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Nenhuma aluno matriculado.");
                                     }
                                 }
-                                else
-                                {
-                                    Console.WriteLine("Nenhuma aluno matriculado.");
-                                }
                             }
-                        }
-                        break;
-                    case "0":
-                        return;
-                    default:
-                        Console.WriteLine("Opção inválida. Tente novamente.");
-                        break;
+                            break;
+                        case "0":
+                            return;
+                        default:
+                            Console.WriteLine("Opção inválida. Tente novamente.");
+                            break;
+                    }
+                }
+                catch (ExcecaoDeTurmaJaExistente ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Erro Inesperado: {ex.Message}");
                 }
             }
         }
 
         private void EscreveTurma(Turma turma)
         {
-            Console.WriteLine($"Turma: {turma.Codigo} | Ensino: {EnumUtils.GetEnumDescription(turma.EtapaEnsino)} | Ano: {turma.Ano} | LimiteVagas: {turma.LimiteVagas} | Matriculados: {turma.NumeroMatriculados}");
-        }        
+            Console.WriteLine(turma.ToString());
+        }
 
         private Turma CriarTurma()
         {
@@ -384,11 +416,11 @@ namespace UCS_ProjetoIntegrador_III_A.Services
             turma.EtapaEnsino = MenuEtapaEnsino();
 
             Console.Write("Informe o ano: ");
-            if (int.TryParse(Console.ReadLine(), out int ano)) 
+            if (int.TryParse(Console.ReadLine(), out int ano))
                 turma.Ano = ano;
 
             Console.Write("Informe o limite de vagas: ");
-            if (int.TryParse(Console.ReadLine(), out int vagas)) 
+            if (int.TryParse(Console.ReadLine(), out int vagas))
                 turma.LimiteVagas = vagas;
 
             return turma;
@@ -426,54 +458,61 @@ namespace UCS_ProjetoIntegrador_III_A.Services
 
         private void MatricularAluno()
         {
-            Console.Write("Informe o código da turma: ");
-            var codigo = Console.ReadLine()?.Trim();
-            if (string.IsNullOrWhiteSpace(codigo))
+            try
             {
-                Console.WriteLine("Código de turma inválido.");
-                return;
-            }
+                Console.Write("Informe o código da turma: ");
+                var codigo = Console.ReadLine()?.Trim();
+                if (string.IsNullOrWhiteSpace(codigo))
+                {
+                    Console.WriteLine("Código de turma inválido.");
+                    return;
+                }
 
-            var turma = _listaDeTurmasService.BuscarPorCodigo(codigo);
-            if (turma == null)
+                var turma = _listaDeTurmasService.BuscarPorCodigo(codigo);
+                if (turma == null)
+                {
+                    Console.WriteLine("Turma não encontrada.");
+                    return;
+                }
+
+                Console.Write("Informe o nome do aluno: ");
+                var nome = Console.ReadLine()?.Trim();
+                if (string.IsNullOrWhiteSpace(nome))
+                {
+                    Console.WriteLine("Nome de aluno inválido.");
+                    return;
+                }
+
+                var aluno = _listaDeAlunosService.BuscarAlunoPorNome(nome);
+                if (aluno == null)
+                {
+                    Console.WriteLine("Aluno não encontrado na lista de alunos.");
+                    return;
+                }
+
+                if (aluno.Turma != null)
+                {
+                    Console.WriteLine($"Aluno já matriculado na turma {aluno.Turma.Codigo}.");
+                    return;
+                }
+
+                var ocupados = turma.Alunos?.Count ?? 0;
+                if (ocupados >= turma.LimiteVagas)
+                {
+                    Console.WriteLine("Turma sem vagas disponíveis.");
+                    return;
+                }
+
+                turma.Alunos.Add(aluno);
+                aluno.Turma = turma;
+                aluno.TurmaId = turma.Id;
+
+                Console.WriteLine($"Aluno {aluno.Nome} matriculado na turma {turma.Codigo} com sucesso.");
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine("Turma não encontrada.");
-                return;
+                Console.WriteLine($"Erro Inesperado: {ex.Message}");
             }
-
-            Console.Write("Informe o nome do aluno: ");
-            var nome = Console.ReadLine()?.Trim();
-            if (string.IsNullOrWhiteSpace(nome))
-            {
-                Console.WriteLine("Nome de aluno inválido.");
-                return;
-            }
-
-            var aluno = _listaDeAlunosService.BuscarAlunoPorNome(nome);
-            if (aluno == null)
-            {
-                Console.WriteLine("Aluno não encontrado na lista de alunos.");
-                return;
-            }
-
-            if (aluno.Turma != null)
-            {
-                Console.WriteLine($"Aluno já matriculado na turma {aluno.Turma.Codigo}.");
-                return;
-            }
-
-            var ocupados = turma.Alunos?.Count ?? 0;
-            if (ocupados >= turma.LimiteVagas)
-            {
-                Console.WriteLine("Turma sem vagas disponíveis.");
-                return;
-            }
-
-            turma.Alunos.Add(aluno);
-            aluno.Turma = turma;
-            aluno.TurmaId = turma.Id;
-
-            Console.WriteLine($"Aluno {aluno.Nome} matriculado na turma {turma.Codigo} com sucesso.");
         }
 
         #endregion

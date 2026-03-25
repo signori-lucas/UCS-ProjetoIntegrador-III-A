@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UCS_ProjetoIntegrador_III_A.Models.Enums;
+using UCS_ProjetoIntegrador_III_A.Utils;
 
 namespace UCS_ProjetoIntegrador_III_A.Models
 {
-    public class Aluno
+    public class Aluno : Object
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid? TurmaId { get; set; }
@@ -42,6 +43,21 @@ namespace UCS_ProjetoIntegrador_III_A.Models
                 else
                     return TipoEnsino.NaoDefinido;
             }
+        }
+
+        public override bool Equals(object objeto)
+        {
+            if (objeto is null) return false;
+
+            var aluno = objeto as Aluno;
+
+            return Nome.Equals(aluno.Nome) && DataNascimento.Equals(aluno.DataNascimento) && CPF.Equals(aluno.CPF);
+
+        }
+
+        public override string ToString()
+        {
+            return $"Nome: {Nome} | CPF: {CPF} | Endereço: {Endereco} | Data Nascimento: {DataNascimento:dd/MM/yyyy} | Idade: {Idade} | Ensino: {EnumUtils.GetEnumDescription(EtapaEnsino)} | Turma: {Turma?.Codigo ?? "Não matriculado"}";
         }
     }
 }
