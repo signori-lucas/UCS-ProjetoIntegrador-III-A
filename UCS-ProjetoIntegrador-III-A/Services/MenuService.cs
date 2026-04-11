@@ -101,6 +101,8 @@ namespace UCS_ProjetoIntegrador_III_A.Services
                         case "1":
                             var a1 = CriarAluno();
                             _listaDeAlunosService.AdicionaInicio(a1);
+
+                            Console.WriteLine();
                             Console.WriteLine("Aluno cadastrado no início da lista.");
 
                             break;
@@ -108,6 +110,8 @@ namespace UCS_ProjetoIntegrador_III_A.Services
 
                             var a2 = CriarAluno();
                             _listaDeAlunosService.AdicionaFinal(a2);
+
+                            Console.WriteLine();
                             Console.WriteLine("Aluno cadastrado no final da lista.");
 
                             break;
@@ -232,6 +236,7 @@ namespace UCS_ProjetoIntegrador_III_A.Services
                 }
                 catch (ExcecaoDeAlunoJaExistente ex)
                 {
+                    Console.WriteLine();
                     Console.WriteLine(ex.Message);
                 }
                 catch (Exception ex)
